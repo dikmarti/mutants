@@ -9,5 +9,11 @@ GET     /                           controllers.HomeController.index
 # An example controller showing how to write asynchronous code
 GET     /message                    controllers.AsyncController.message
 
+# A controller showing if dna represents a mutant
+POST     /mutant                    controllers.HumanController.mutant
+
+# A controller showing if dna represents a mutant
+GET     /stats                    controllers.HumanController.stats
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

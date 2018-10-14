@@ -1,8 +1,10 @@
 package controllers;
 
 import akka.actor.ActorSystem;
-import javax.inject.*;
 
+
+import javax.inject.*;
+import javax.persistence.*; 
 import akka.actor.Scheduler;
 import play.*;
 import play.mvc.*;
@@ -11,11 +13,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
-import scala.concurrent.ExecutionContext;
+import scala.concurrent.java8.*;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.ExecutionContextExecutor;
-import services.MutantService;
-import model.domain.*;
+import services.HumanService;
+import model.repository.JPARepository;
+import java.util.List;
 
 /**
  * This controller contains an action that demonstrates how to write
@@ -27,7 +30,8 @@ public class AsyncController extends Controller {
 
     private final ActorSystem actorSystem;
     private final ExecutionContextExecutor exec;
-    private final MutantService mutantService;
+    private final HumanService humanService;
+    private final JPARepository jpaRepo;
 
     /**
      * @param actorSystem We need the {@link ActorSystem}'s
@@ -38,10 +42,11 @@ public class AsyncController extends Controller {
      * An {@link ExecutionContextExecutor} implements both interfaces.
      */
     @Inject
-    public AsyncController(ActorSystem actorSystem, ExecutionContextExecutor exec, MutantService mutantService) {
+    public AsyncController(ActorSystem actorSystem, ExecutionContextExecutor exec, HumanService humanService, JPARepository jpaRepo) {
       this.actorSystem = actorSystem;
       this.exec = exec;
-      this.mutantService = mutantService;
+      this.humanService = humanService;
+      this.jpaRepo = jpaRepo;
     }
 
     /**
@@ -58,12 +63,11 @@ public class AsyncController extends Controller {
 
     private CompletionStage<String> getFutureMessage(long time, TimeUnit timeUnit) {
     	
-    	Mutant mutant = new Mutant(new String[] {"ATGCGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"});    	
+    	CompletableFuture<String> future = new CompletableFuture<>();
     	
-        CompletableFuture<String> future = new CompletableFuture<>();
         actorSystem.scheduler().scheduleOnce(
             Duration.create(time, timeUnit),
-            () -> future.complete("Hi! " + mutantService.isMutant(mutant)),
+            () -> future.complete("Hi! " + " query: " + String.valueOf(jpaRepo.runningWithTransaction().size())),
             exec
         );
         return future;

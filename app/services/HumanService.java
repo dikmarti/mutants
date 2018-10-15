@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import model.domain.human.Human;
 import model.domain.human.StatsResponseModel;
-import model.repository.JPARepository;
+import model.repository.HumanRepository;
+import model.repository.IHumanRepository;
 
 
 public class HumanService {
@@ -21,15 +20,15 @@ public class HumanService {
 	private static int MIN_SEQUENCE_MUTANT = 1;
 	private static String SECUENCE_LETTERS = "ATCG";
 	
-	private final JPARepository jpaRepo;
+	private HumanRepository humanRepository;
 	
 	@Inject
-	public HumanService(JPARepository jpaRepository) {
+	public HumanService(HumanRepository humanRepository) {
 		super();	
-		this.jpaRepo = jpaRepository;
+		this.humanRepository = humanRepository;
 	}
 
-	 public static boolean isMutant(String[] dna) {
+	 public boolean isMutant(String[] dna) {
 		 
 		 	String[] adnToVerifyRows = dna;
 		 	
@@ -100,50 +99,38 @@ public class HumanService {
 	 
 	  public Human getHuman(final String dna) {
  	
-		  return jpaRepo.getJpaApi().withTransaction(entityManager -> {
-	            Query query = entityManager.createNamedQuery("Human.findByDna").setParameter("dna", dna);
-	            List<Human> result = (List<Human>) query.getResultList();	            
-	            
-	            return result.size() == 0 ? null: result.get(0);
-	      });
+		  return humanRepository.getHuman(dna);
 		  
 	  }
 	  
-	  public Human saveHuman(final Human human) {
+	  public void saveHuman(final Human human) {
 		  
 		  Human humanFinded = getHuman(human.getDna());
 		  
 		  if(humanFinded != null) {
-			  return null;
+			  return;
 		  }
 		  
-		  return jpaRepo.getJpaApi().withTransaction(entityManager -> {
-	           entityManager.persist(human);	           
-	           return human;
-	      });
+		 humanRepository.saveHuman(human);
 
 	  }
 	  
 	  public StatsResponseModel getStats() {
-		  return jpaRepo.getJpaApi().withTransaction(entityManager -> {
-	            Query query = entityManager.createNativeQuery("SELECT count(*) FROM Human GROUP BY mutant ORDER BY mutant ASC");
-	            
-	            List<Object> resultList = (List<Object>)query.getResultList();
-	            
-	            // Cant no mutant
-	            Object human = resultList.get(0);
-	            
-	            // Cant mutant
-	            Object mutant = resultList.get(1);
-	            System.out.println(resultList);
-	            
-	            StatsResponseModel responseModel = new StatsResponseModel();
-	            responseModel.setCount_human_dna(String.valueOf(human));
-	            responseModel.setCount_mutant_dna(String.valueOf(mutant));   
-	            responseModel.setRatio(((BigInteger)mutant).floatValue()/((BigInteger)(human)).floatValue());
-	            	            
-	            return responseModel;
-	      });
+		  List<Object> resultList = humanRepository.getHumanCount();
+		  
+		  // Cant no mutant
+          Object human = resultList.get(0);
+          
+          // Cant mutant
+          Object mutant = resultList.get(1);
+          System.out.println(resultList);
+          
+          StatsResponseModel statsResponseModel = new StatsResponseModel();
+          statsResponseModel.setCount_human_dna(String.valueOf(human));
+          statsResponseModel.setCount_mutant_dna(String.valueOf(mutant));   
+          statsResponseModel.setRatio(((BigInteger)mutant).floatValue()/((BigInteger)(human)).floatValue());
+		  
+		  return statsResponseModel;
 	  }
 
 }

@@ -15,6 +15,7 @@ libraryDependencies ++= Seq(
   javaJpa,
   "org.hibernate" % "hibernate-entitymanager" % "5.1.0.Final"
 )
+libraryDependencies += "org.mockito" % "mockito-core" % "2.10.0" % "test"
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "mutants_org.controllers._"
@@ -23,3 +24,11 @@ libraryDependencies ++= Seq(
 // play.sbt.routes.RoutesKeys.routesImport += "mutants_org.binders._"
 
 PlayKeys.externalizeResources := false
+
+javaOptions in Test ++= Seq(
+  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=9998",
+  "-Xms512M",
+  "-Xmx1536M",
+  "-Xss1M",
+  "-XX:MaxPermSize=384M"
+)

@@ -20,14 +20,6 @@ public class JPARepository {
     
     public JPAApi getJpaApi() {
     	return jpaApi;
-    }
+    }   
     
-    public List<Object[]> runningWithTransaction() {
-
-        return jpaApi.withTransaction(entityManager -> {
-            Query query = entityManager.createNativeQuery("select * from test_table");
-            return (List<Object[]>) query.getResultList();
-        });
-      
-    }
 }

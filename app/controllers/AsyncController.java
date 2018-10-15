@@ -67,7 +67,7 @@ public class AsyncController extends Controller {
     	
         actorSystem.scheduler().scheduleOnce(
             Duration.create(time, timeUnit),
-            () -> future.complete("Hi! " + " query: " + String.valueOf(jpaRepo.runningWithTransaction().size())),
+            () -> future.complete("Hi! "),
             exec
         );
         return future;

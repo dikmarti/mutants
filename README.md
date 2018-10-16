@@ -20,7 +20,7 @@ From the root project directory execute: sbt run
 
 ```
 http://localhost:9000/
-
+```
 ## Controllers
 
 - HumanController:

@@ -13,7 +13,7 @@ sbt (https://www.scala-sbt.org/download.html)
 ## Running App
 
 ```
-sbt run
+From the root project directory execute: sbt run
 ```
 
 ## Execute App

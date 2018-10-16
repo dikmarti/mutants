@@ -31,7 +31,7 @@ Shows if an ADN belongs to mutant
   Url: http://localhost:9000/mutant 
   Input: {"dna": ["ATGCGA","CAGTGC","TTATGT","AGAAGG","TTTTTA","TCACTG"]}
   Output: - HTTP 200-OK (If the human it's a mutant)
-			- 403-Forbiden (If the human it's not a mutant)
+	  - 403-Forbiden (If the human it's not a mutant)
 			
 Shows statdistics of humans and mutants
 

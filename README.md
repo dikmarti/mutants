@@ -24,7 +24,7 @@ http://localhost:9000/
 ## Controllers
 
 - HumanController:
-
+```
 Shows if an ADN belongs to mutant
 
   Method: POST
@@ -38,3 +38,4 @@ Shows statdistics of humans and mutants
   Method: GET
   Url: http://localhost:9000/stats
   Output: {"count_mutant_dna":"2","count_human_dna":"2","ratio":1.0} 
+```

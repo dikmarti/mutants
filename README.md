@@ -3,6 +3,13 @@
 # mutant-challenge
 
 
+##Requirements
+
+```
+Java SE 1.8
+sbt (https://www.scala-sbt.org/download.html) 
+```
+
 ## Running App
 
 ```
